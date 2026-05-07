@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="B2B 생명과학 홈페이지 리뉴얼 및 워드프레스 구축 — 프로젝트 제안서" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['SUIT Variable', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace']
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              600: '#0284c7',
+              700: '#0369a1'
+            }
+          },
+          boxShadow: {
+            soft: '0 10px 30px -18px rgba(15, 23, 42, 0.35)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root { color-scheme: light; font-size: 16px; }
+    body {
+      font-family: 'SUIT Variable', sans-serif;
+      font-size: 1rem;
+      background-image:
+        radial-gradient(circle at 12% 18%, rgba(14, 165, 233, 0.08), transparent 42%),
+        radial-gradient(circle at 88% 82%, rgba(2, 132, 199, 0.06), transparent 48%);
+    }
+
+    .doc-content h1, .doc-content h2, .doc-content h3, .doc-content h4 {
+      color: rgb(15 23 42); font-weight: 700; letter-spacing: -0.01em;
+      line-height: 1.3; margin-top: 1.6em; margin-bottom: 0.7em;
+    }
+    .doc-content h1 { font-size: 2rem; margin-top: 0.2em; }
+    .doc-content h2 { font-size: 1.4rem; }
+    .doc-content h3 { font-size: 1.15rem; }
+    .doc-content p, .doc-content li {
+      color: rgb(51 65 85); line-height: 1.8; font-size: 1rem;
+    }
+    .doc-content p, .doc-content ul, .doc-content ol,
+    .doc-content table, .doc-content pre, .doc-content blockquote {
+      margin-bottom: 1rem;
+    }
+    .doc-content ul, .doc-content ol { padding-left: 1.2rem; }
+    .doc-content ul { list-style: disc; }
+    .doc-content ol { list-style: decimal; }
+    .doc-content table {
+      width: 100%; border-collapse: collapse;
+      border: 1px solid rgb(226 232 240); border-radius: 0.75rem;
+      overflow: hidden; font-size: 1rem;
+    }
+    .doc-content th, .doc-content td {
+      border: 1px solid rgb(226 232 240); padding: 0.7rem 0.8rem;
+      text-align: left; vertical-align: top;
+    }
+    .doc-content th {
+      background: rgb(248 250 252); color: rgb(30 41 59); font-weight: 600;
+    }
+    .doc-content pre, .doc-content code {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    }
+    .doc-content pre {
+      background: rgb(15 23 42); color: rgb(226 232 240);
+      padding: 1rem; border-radius: 0.75rem; overflow-x: auto;
+      font-size: 1rem; line-height: 1.65;
+    }
+    .doc-content p code, .doc-content li code,
+    .doc-content td code, .doc-content th code {
+      background: rgb(241 245 249); color: rgb(15 23 42);
+      border: 1px solid rgb(226 232 240); border-radius: 0.4rem;
+      padding: 0.08rem 0.4rem; font-size: 1em;
+    }
+    .doc-content blockquote {
+      border-left: 3px solid rgb(14 165 233); padding-left: 0.85rem;
+      color: rgb(71 85 105); background: rgb(240 249 255);
+      border-radius: 0.5rem; padding-top: 0.55rem; padding-bottom: 0.55rem;
+    }
+
+    .text-xs { font-size: 1rem !important; }
+
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0.6rem; top: 0.25rem; bottom: 0.25rem;
+      width: 2px; background: rgb(186 230 253);
+    }
+    .timeline-item { position: relative; margin-bottom: 1.75rem; }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -1.65rem; top: 0.35rem;
+      width: 0.75rem; height: 0.75rem; border-radius: 50%;
+      background: rgb(2 132 199); border: 3px solid rgb(224 242 254);
+    }
+
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    #sidebar-backdrop { display: none; }
+    #sidebar-backdrop.open { display: block; }
+    @media (max-width: 1023px) {
+      #sidebar { transform: translateX(-100%); transition: transform 0.2s ease; position: fixed; top: 0; left: 0; z-index: 40; height: 100vh; width: 80vw; max-width: 320px; }
+      #sidebar.open { transform: translateX(0); }
+    }
+  </style>
+  <title>B2B 생명과학 홈페이지 리뉴얼 및 워드프레스 구축 — 프로젝트 제안서</title>
+</head>
+<body class="text-slate-800 font-sans antialiased">
+  <div class="mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-10">
+
+    <!-- Header -->
+    <header class="mb-6 rounded-2xl border border-slate-200/70 bg-white/85 px-5 py-3 shadow-soft backdrop-blur">
+      <div class="flex flex-wrap items-center gap-3">
+        <button id="sidebar-toggle" class="lg:hidden inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1 text-sm font-medium text-slate-700 hover:border-sky-300 hover:text-sky-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          메뉴
+        </button>
+        <a href="#home" class="inline-flex items-center shrink-0 text-sm font-bold tracking-tight text-slate-800">
+          프로젝트 제안서
+        </a>
+        <div class="hidden sm:block ml-auto text-right">
+          <p class="text-sm font-semibold tracking-[0.04em] text-sky-700/90">B2B 생명과학 홈페이지 리뉴얼 및 워드프레스 구축</p>
+          <p class="text-xs text-slate-400">프로젝트 제안서</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+
+      <!-- Sidebar -->
+      <div id="sidebar-backdrop" class="fixed inset-0 bg-black/30 z-30 lg:hidden" onclick="closeSidebar()"></div>
+      <aside id="sidebar" class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 shadow-soft backdrop-blur lg:sticky lg:top-6 lg:h-[calc(100vh-4rem)] lg:overflow-auto">
+        <nav id="nav" class="space-y-1">
+          <a href="#home" data-page="home" class="nav-link block rounded-xl border px-3 py-2 text-sm border-sky-200 bg-sky-50 font-medium text-sky-700">홈</a>
+          <div class="my-3 border-t border-slate-200"></div>
+          <p class="mb-2 mt-1 px-1 text-sm font-semibold tracking-[0.14em] text-slate-400">제안서</p>
+          <a href="#overview" data-page="overview" class="nav-link block rounded-xl border border-transparent px-3 py-2 text-sm text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900">프로젝트 소개</a>
+          <a href="#estimate" data-page="estimate" class="nav-link block rounded-xl border border-transparent px-3 py-2 text-sm text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900">견적서</a>
+          <a href="#manday" data-page="manday" class="nav-link block rounded-xl border border-transparent px-3 py-2 text-sm text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900">공수계산서</a>
+          <a href="#prd" data-page="prd" class="nav-link block rounded-xl border border-transparent px-3 py-2 text-sm text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900">PRD</a>
+          <div class="my-3 border-t border-slate-200"></div>
+          <p class="mb-2 mt-1 px-1 text-sm font-semibold tracking-[0.14em] text-slate-400">일정 & 경험</p>
+          <a href="#timeline" data-page="timeline" class="nav-link block rounded-xl border border-transparent px-3 py-2 text-sm text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900">일정 제안</a>
+          <a href="#portfolio" data-page="portfolio" class="nav-link block rounded-xl border border-transparent px-3 py-2 text-sm text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900">유사 프로젝트 경험</a>
+        </nav>
+      </aside>
+
+      <!-- Main -->
+      <main class="min-w-0">
+
+        <!-- PAGE: Home -->
+        <div id="page-home" class="page-section active space-y-6">
+          <div class="rounded-2xl border border-slate-200/70 bg-white/95 p-6 shadow-soft backdrop-blur md:p-8">
+            <p class="mb-2 text-xs font-semibold tracking-[0.2em] text-sky-700/80">프로젝트 제안서</p>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">B2B 생명과학 홈페이지 리뉴얼 및 워드프레스 구축</h1>
+            <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600 md:text-base">응용분야(Application) 중심의 직관적 정보 구조와 Salesforce MCAE 자동 연동을 통해 잠재 고객(Lead) 확보 및 세일즈 전환율을 높이는 글로벌 수준의 B2B 생명과학 홈페이지를 워드프레스 기반으로 구축합니다.</p>
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+              <span class="inline-flex rounded-full border border-sky-200 bg-sky-100 px-2.5 py-1 text-sm font-semibold tracking-[0.12em] text-sky-700">8,500,000원</span>
+              <span class="inline-flex rounded-full border border-sky-200 bg-sky-100 px-2.5 py-1 text-sm font-semibold tracking-[0.12em] text-sky-700">90일</span>
+              <span class="inline-flex rounded-full border border-amber-200 bg-amber-100 px-2.5 py-1 text-sm font-semibold tracking-[0.12em] text-amber-700">워드프레스 리뉴얼</span>
+              <a href="https://www.wishket.com/project/155137/" target="_blank" rel="noopener noreferrer"
+                 class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-sm font-medium text-slate-500 transition hover:border-sky-300 hover:text-sky-700">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                원본 공고
+              </a>
+            </div>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <a href="#overview" class="group rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white">
+              <div class="mb-3 inline-flex rounded-full border px-2.5 py-1 text-sm font-semibold tracking-[0.12em] bg-sky-100 text-sky-700 border-sky-200">소개</div>
+              <h2 class="text-lg font-semibold tracking-tight text-slate-900 group-hover:text-sky-700">프로젝트 소개</h2>
+              <p class="mt-2 text-sm leading-7 text-slate-600">참고 사이트 분석, 핵심 요구사항, 차별화 제안 포인트</p>
+            </a>
+            <a href="#estimate" class="group rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white">
+              <div class="mb-3 inline-flex rounded-full border px-2.5 py-1 text-sm font-semibold tracking-[0.12em] bg-sky-100 text-sky-700 border-sky-200">비용</div>
+              <h2 class="text-lg font-semibold tracking-tight text-slate-900 group-hover:text-sky-700">견적서</h2>
+              <p class="mt-2 text-sm leading-7 text-slate-600">항목별 비용 산출 근거 및 상세 견적</p>
+            </a>
+            <a href="#manday" class="group rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white">
+              <div class="mb-3 inline-flex rounded-full border px-2.5 py-1 text-sm font-semibold tracking-[0.12em] bg-sky-100 text-sky-700 border-sky-200">공수</div>
+              <h2 class="text-lg font-semibold tracking-tight text-slate-900 group-hover:text-sky-700">공수계산서</h2>
+              <p class="mt-2 text-sm leading-7 text-slate-600">기능별 개발 공수(Man-Day) 산출 내역</p>
+            </a>
+            <a href="#prd" class="group rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white">
+              <div class="mb-3 inline-flex rounded-full border px-2.5 py-1 text-sm font-semibold tracking-[0.12em] bg-amber-100 text-amber-700 border-amber-200">기획</div>
+              <h2 class="text-lg font-semibold tracking-tight text-slate-900 group-hover:text-sky-700">PRD</h2>
+              <p class="mt-2 text-sm leading-7 text-slate-600">기능 요구사항 정의서, 사용자 유형, 기술 제약</p>
+            </a>
+            <a href="#timeline" class="group rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white">
+              <div class="mb-3 inline-flex rounded-full border px-2.5 py-1 text-sm font-semibold tracking-[0.12em] bg-amber-100 text-amber-700 border-amber-200">일정</div>
+              <h2 class="text-lg font-semibold tracking-tight text-slate-900 group-hover:text-sky-700">일정 제안</h2>
+              <p class="mt-2 text-sm leading-7 text-slate-600">5단계 마일스톤 및 산출물 일정표</p>
+            </a>
+            <a href="#portfolio" class="group rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white">
+              <div class="mb-3 inline-flex rounded-full border px-2.5 py-1 text-sm font-semibold tracking-[0.12em] bg-amber-100 text-amber-700 border-amber-200">경험</div>
+              <h2 class="text-lg font-semibold tracking-tight text-slate-900 group-hover:text-sky-700">유사 프로젝트 경험</h2>
+              <p class="mt-2 text-sm leading-7 text-slate-600">B2B 포탈, 어드민, 외부 API 연동 경험 3건</p>
+            </a>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 text-center shadow-soft backdrop-blur">
+              <p class="text-2xl font-bold text-sky-700">10+</p>
+              <p class="mt-1 text-sm text-slate-500">B2B 프로젝트 수행</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 text-center shadow-soft backdrop-blur">
+              <p class="text-2xl font-bold text-sky-700">9</p>
+              <p class="mt-1 text-sm text-slate-500">대분류 메뉴 IA</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 text-center shadow-soft backdrop-blur">
+              <p class="text-2xl font-bold text-sky-700">41</p>
+              <p class="mt-1 text-sm text-slate-500">총 공수 (M/D)</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 text-center shadow-soft backdrop-blur">
+              <p class="text-2xl font-bold text-sky-700">90일</p>
+              <p class="mt-1 text-sm text-slate-500">납품 일정</p>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-sky-200/70 bg-gradient-to-br from-sky-50 to-brand-50 p-6 text-center shadow-soft md:p-10">
+            <h2 class="text-xl font-bold tracking-tight text-slate-900 md:text-2xl">함께 만들어 가겠습니다</h2>
+            <p class="mx-auto mt-3 max-w-lg text-sm leading-7 text-slate-600">각 메뉴를 클릭하시면 상세 내용을 확인하실 수 있습니다.</p>
+          </div>
+        </div>
+
+        <!-- PAGE: 프로젝트 소개 -->
+        <div id="page-overview" class="page-section space-y-6">
+          <div class="rounded-2xl border border-slate-200/70 bg-white/95 p-5 shadow-soft backdrop-blur md:p-8">
+            <article class="doc-content">
+              <h1>프로젝트 소개</h1>
+              <blockquote>응용분야(Application) 중심의 직관적 정보 구조와 Salesforce MCAE 자동 연동을 통해 잠재 고객(Lead) 확보 및 세일즈 전환율을 높이는 글로벌 수준의 B2B 생명과학 홈페이지를 워드프레스 기반으로 구축합니다.</blockquote>
+
+              <h2>프로젝트 개요</h2>
+              <table>
+                <tr><th>항목</th><th>내용</th></tr>
+                <tr><td>프로젝트명</td><td><a href="https://www.wishket.com/project/155137/" target="_blank" rel="noopener noreferrer" class="text-sky-700 underline decoration-sky-300 hover:decoration-sky-500">B2B 생명과학 홈페이지 리뉴얼 및 워드프레스 구축</a></td></tr>
+                <tr><td>카테고리</td><td>웹 자사몰 구축, 퍼블리싱·반응형 / 워드프레스 리뉴얼</td></tr>
+                <tr><td>제안 금액</td><td>8,500,000원 (VAT 별도)</td></tr>
+                <tr><td>제안 기간</td><td>90일 (계약 체결 후 즉시 시작)</td></tr>
+                <tr><td>핵심 기술</td><td>WordPress 6.x, Astra Pro, Elementor Pro, ACF Pro, Custom Gutenberg Block, Salesforce MCAE Web-to-Lead, GA4</td></tr>
+                <tr><td>지원 플랫폼</td><td>PC / 태블릿 / 모바일 전면 반응형 (Responsive Web)</td></tr>
+              </table>
+
+              <h2>핵심 요구사항 분석</h2>
+              <ul>
+                <li><strong>응용분야 중심 IA</strong> — 단순 제품 카탈로그가 아닌, 고객의 연구 목적과 응용 분야 기반으로 제품·솔루션을 연결하는 구조</li>
+                <li><strong>제품 ↔ 응용분야 N:N 자동 연결</strong> — 한 제품이 여러 응용분야에 노출되고, 응용분야 페이지에서 관련 제품/자료가 자동 표시</li>
+                <li><strong>응용분야 스토리텔링형 UI</strong> — Challenge → Solution → Reference → Product 흐름으로 구성</li>
+                <li><strong>통합 검색</strong> — 제품명/게시글 제목/본문/첨부파일명 검색 + 브랜드·응용분야 기반 필터링</li>
+                <li><strong>자료실</strong> — Document / News / Webinar / Video 4종 + PDF·이미지·Video 다운로드 + 웨비나 다시보기</li>
+                <li><strong>마케팅 기능</strong> — SEO/GEO 최적화, Open Graph·메타태그 관리, URL 커스텀, 팝업/프로모션 노출</li>
+                <li><strong>Salesforce MCAE CRM 연동</strong> — 문의·데모 신청·교육 신청 폼 데이터 자동 전송</li>
+                <li><strong>GA4 방문자 분석</strong> — 유입 경로/페이지별 전환 대시보드</li>
+                <li><strong>관리자 CMS 고도화</strong> — 제품/응용분야/자료실/팝업/SEO 메타/문의 데이터 통합 관리</li>
+                <li><strong>관리자 교육 + 운영 매뉴얼</strong> — 내부 마케팅팀이 직접 콘텐츠 운영 가능하도록 지원</li>
+                <li><strong>최신 웹 표준 + SSL(HTTPS)</strong> — 접근성, 페이지 속도(Lighthouse 90+), 보안 기준 준수</li>
+              </ul>
+
+              <h2>제안 포인트</h2>
+              <p><strong>1. 참고 사이트 분석 기반 IA 설계</strong> — 클라이언트가 제시한 Cytiva Korea, LG에너지솔루션 Battery Inside, 자연과학 자료실 3개 사이트를 직접 분석하여, 응용분야(mAb·바이러스 벡터·mRNA 등 연구 목적별) 카테고리 + 제품 기술 기반 분류 + 자료실 5종 분류(News/Document/Webinar/Video/Others) + 브랜드·응용분야 필터 + 3종 뷰 모드(gallery·magazine·list) 패턴을 반영합니다.</p>
+
+              <p><strong>2. Astra Pro 기반 경량 테마 + 자체 Gutenberg Block 병행</strong> — 일반 콘텐츠 페이지는 Elementor Pro로 운영팀이 직접 편집하고, 메인 히어로/응용분야 스토리텔링/제품 비교 등 핵심 페이지는 자체 Custom Gutenberg Block으로 구현하여 페이지 로딩 1.5초 이내, Lighthouse 점수 90+를 동시에 달성합니다.</p>
+
+              <p><strong>3. 제품 ↔ 응용분야 N:N 자동 연결</strong> — ACF Pro Bidirectional Relationship 필드를 활용하여 한 번의 등록으로 양방향 관계가 자동 구성됩니다. 제품 등록 시 응용분야를 체크하면 응용분야 페이지에 해당 제품이 자동 노출되고, 자료실 콘텐츠도 동일 메커니즘으로 연결됩니다.</p>
+
+              <p><strong>4. Salesforce MCAE 안전한 연동</strong> — Web-to-Lead 표준 엔드포인트 + reCAPTCHA v3 스팸 방지 + 서버사이드 토큰 검증으로 보안과 안정성 확보. 폼 제출 실패 시 워드프레스 DB에 백업 저장하여 데이터 유실 0% 보장.</p>
+
+              <p><strong>5. SEO + GEO(Generative Engine Optimization) 동시 최적화</strong> — 검색엔진(Google/Naver) + 생성형 AI 엔진(ChatGPT/Perplexity) 동시 노출을 위해 Schema.org 구조화 데이터(Product, Organization, FAQ, BreadcrumbList) 적용 + JSON-LD + llms.txt + 의미 단위 콘텐츠 청크 구조 적용.</p>
+
+              <p><strong>6. 관리자 운영 자율성 확보</strong> — 향후 내부 마케팅팀이 직접 콘텐츠를 운영할 수 있도록 화상 교육(2회) + 영상 녹화본 + 단계별 스크린샷 매뉴얼 제공. Elementor 기반 콘텐츠 편집은 비개발자도 즉시 활용 가능.</p>
+
+              <h2>사용 기술 및 툴</h2>
+              <h3>개발 기술</h3>
+              <div class="flex flex-wrap gap-2 not-prose mb-4">
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">WordPress 6.x</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">Astra Pro</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">Elementor Pro</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">ACF Pro</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">Gutenberg Custom Block</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">PHP 8.x</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">MySQL 8</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">Bootstrap 5</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">Tailwind 보조</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">Salesforce MCAE</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">GA4</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">Google Tag Manager</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">Schema.org JSON-LD</span>
+                <span class="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">reCAPTCHA v3</span>
+              </div>
+              <h3>협업 및 커뮤니케이션</h3>
+              <div class="flex flex-wrap gap-2 not-prose">
+                <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700">Slack / 카카오톡</span>
+                <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700">Zoom / Google Meet</span>
+                <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700">Notion / Google Docs</span>
+                <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700">Figma</span>
+                <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700">GitHub Issues</span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- PAGE: 견적서 -->
+        <div id="page-estimate" class="page-section space-y-6">
+          <div class="rounded-2xl border border-slate-200/70 bg-white/95 p-5 shadow-soft backdrop-blur md:p-8">
+            <article class="doc-content">
+              <h1>견적서</h1>
+              <blockquote>본 견적은 메뉴 구성도와 핵심 기능, 참고 사이트 분석 결과를 기반으로 산출되었습니다.</blockquote>
+
+              <h2>견적 요약</h2>
+              <table>
+                <tr><th>항목</th><th>내용</th></tr>
+                <tr><td>프로젝트명</td><td>B2B 생명과학 홈페이지 리뉴얼 및 워드프레스 구축</td></tr>
+                <tr><td>제안 금액</td><td><strong>8,500,000원 (VAT 별도)</strong></td></tr>
+                <tr><td>제안 기간</td><td>90일</td></tr>
+                <tr><td>견적 유효기간</td><td>제안일로부터 30일</td></tr>
+              </table>
+
+              <h2>상세 견적 내역</h2>
+              <table>
+                <thead>
+                  <tr><th>구분</th><th>항목</th><th>수량</th><th>금액</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>기획</td><td>메뉴 구성도 기반 IA 고도화, 와이어프레임, PRD/기술 명세 작성</td><td>1식</td><td>1,200,000원</td></tr>
+                  <tr><td>디자인</td><td>Figma UI/UX 디자인 (메인 + 9개 대분류 + 반응형 PC/태블릿/모바일 + 디자인 시스템)</td><td>1식</td><td>2,500,000원</td></tr>
+                  <tr><td>개발</td><td>워드프레스 테마 커스터마이징 (Astra Pro 기반) + Custom Gutenberg Block</td><td>1식</td><td>1,500,000원</td></tr>
+                  <tr><td>개발</td><td>커스텀 포스트 타입(제품/응용분야/자료실/교육/데모/이벤트) + ACF Pro 관계 필드 N:N 자동 연결</td><td>1식</td><td>1,200,000원</td></tr>
+                  <tr><td>개발</td><td>통합 검색 (제목·본문·첨부파일명 + 브랜드·응용분야 필터) + 자료실(PDF/Video/Webinar 다시보기)</td><td>1식</td><td>900,000원</td></tr>
+                  <tr><td>개발</td><td>Salesforce MCAE 연동 (Web-to-Lead 폼 + 데이터 동기화 + reCAPTCHA v3 + 백업 저장)</td><td>1식</td><td>600,000원</td></tr>
+                  <tr><td>개발</td><td>SEO/GEO 최적화 (Schema.org JSON-LD, OG, sitemap, llms.txt, URL 커스텀) + GA4/GTM 연동</td><td>1식</td><td>400,000원</td></tr>
+                  <tr><td>운영</td><td>관리자 교육(화상 2회 + 영상 녹화본) + 운영 매뉴얼(Notion + 단계별 스크린샷) + QA/배포(SSL/HTTPS)</td><td>1식</td><td>200,000원</td></tr>
+                </tbody>
+                <tfoot>
+                  <tr><th colspan="3">합계 (VAT 별도)</th><th>8,500,000원</th></tr>
+                </tfoot>
+              </table>
+
+              <h2>산정 근거</h2>
+              <ul>
+                <li>본 프로젝트의 핵심은 단순 워드프레스 사이트 구축이 아닌 <strong>응용분야 중심 IA + 제품 N:N 자동 연결 + Salesforce CRM 연동</strong>이라는 3개 축으로, 이를 워드프레스 표준 기능만으로 구현하지 않고 ACF Pro 관계 필드, REST API 확장, 자체 Gutenberg Block을 활용하여 운영 효율성과 성능을 동시에 확보합니다.</li>
+                <li>디자인 영역의 비중이 큰 이유는 메인 페이지 외 9개 대분류 페이지(제품/응용분야/자료실/교육/데모/이벤트/회사정보/검색)가 각각 고유한 레이아웃을 요구하며, 응용분야는 스토리텔링형 UI(Challenge → Solution → Reference → Product)로 별도 설계가 필요하기 때문입니다.</li>
+                <li>유사 B2B 포탈 및 어드민 시스템 다수 수행 경험을 바탕으로 효율적 개발이 가능하여, 시장 평균 대비 합리적 견적을 제시합니다.</li>
+              </ul>
+
+              <h2>포함 사항</h2>
+              <ul>
+                <li>전체 워드프레스 소스 코드 + 테마/플러그인 소스 이관</li>
+                <li>개발 문서 (DB 스키마, ACF 필드 명세, REST API 명세서, Salesforce 연동 시퀀스, 배포 가이드)</li>
+                <li>관리자 운영 매뉴얼 (Notion 기반, 단계별 스크린샷 포함)</li>
+                <li>관리자 교육 (화상 2회, 회당 2시간) + 영상 녹화본</li>
+                <li>1개월 무상 하자 보수 (배포 후)</li>
+                <li>SSL 인증서 적용 (Let's Encrypt 또는 호스팅 제공 SSL)</li>
+                <li>배포 환경 세팅 (1회)</li>
+              </ul>
+
+              <h2>불포함 사항</h2>
+              <ul>
+                <li>웹 호스팅 비용 (Cloudways, AWS Lightsail, 카페24 등)</li>
+                <li>도메인 구매·갱신 비용</li>
+                <li>Astra Pro / Elementor Pro / ACF Pro 라이선스 (필요 시 별도 협의)</li>
+                <li>Salesforce MCAE 라이선스 및 API 사용료 (클라이언트 보유분 활용 가정)</li>
+                <li>유료 폰트 라이선스</li>
+                <li>콘텐츠(텍스트, 제품 이미지, 영상) 제작 — 클라이언트 제공 또는 별도 협의</li>
+                <li>하자 보수 기간(1개월) 이후 유지보수 및 신규 기능 추가</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <!-- PAGE: 공수계산서 -->
+        <div id="page-manday" class="page-section space-y-6">
+          <div class="rounded-2xl border border-slate-200/70 bg-white/95 p-5 shadow-soft backdrop-blur md:p-8">
+            <article class="doc-content">
+              <h1>공수계산서</h1>
+              <blockquote>기능별 개발 공수(Man-Day)를 산출하여 일정과 비용의 근거를 제시합니다. 1 M/D = 1인 8시간 기준.</blockquote>
+
+              <h2>공수 요약</h2>
+              <table>
+                <tr><th>구분</th><th>공수 (M/D)</th><th>비율</th></tr>
+                <tr><td>기획/설계</td><td>5 M/D</td><td>12%</td></tr>
+                <tr><td>Figma UI/UX 디자인</td><td>12 M/D</td><td>29%</td></tr>
+                <tr><td>프론트엔드 개발</td><td>8 M/D</td><td>20%</td></tr>
+                <tr><td>백엔드 개발</td><td>8 M/D</td><td>19%</td></tr>
+                <tr><td>운영/QA/배포/교육</td><td>8 M/D</td><td>20%</td></tr>
+                <tr><th>합계</th><th>41 M/D</th><th>100%</th></tr>
+              </table>
+
+              <h2>기능별 상세 공수</h2>
+              <table>
+                <thead>
+                  <tr><th>기능</th><th>세부 작업</th><th>담당</th><th>공수 (M/D)</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td rowspan="2">기획/설계</td><td>메뉴 구성도 기반 IA 고도화 + 와이어프레임</td><td>기획</td><td>3</td></tr>
+                  <tr><td>PRD / 기술 명세 / DB 스키마 정의</td><td>기획</td><td>2</td></tr>
+                  <tr><td rowspan="4">Figma 디자인</td><td>메인 + 회사정보 + 푸터 디자인</td><td>디자인</td><td>2.5</td></tr>
+                  <tr><td>제품/응용분야/자료실 디자인 (스토리텔링형 UI 포함)</td><td>디자인</td><td>4</td></tr>
+                  <tr><td>교육·데모·이벤트·검색 디자인</td><td>디자인</td><td>2.5</td></tr>
+                  <tr><td>반응형 (PC/태블릿/모바일) + 디자인 시스템</td><td>디자인</td><td>3</td></tr>
+                  <tr><td rowspan="3">프론트엔드</td><td>Astra Pro 테마 커스터마이징 + Elementor 글로벌 위젯 정의</td><td>FE</td><td>3</td></tr>
+                  <tr><td>응용분야 스토리텔링 UI + 카드 레이아웃 + Custom Gutenberg Block</td><td>FE</td><td>3</td></tr>
+                  <tr><td>통합 검색 UI + 필터 (브랜드/응용분야) + 3뷰 모드</td><td>FE</td><td>2</td></tr>
+                  <tr><td rowspan="4">백엔드</td><td>커스텀 포스트 타입(제품/응용분야/자료실/교육/데모/이벤트) + 분류체계</td><td>BE</td><td>2.5</td></tr>
+                  <tr><td>제품 ↔ 응용분야 N:N 자동 연결 + ACF Pro 관계 필드</td><td>BE</td><td>1.5</td></tr>
+                  <tr><td>검색 인덱싱 (제목/본문/첨부파일명) + 필터 로직</td><td>BE</td><td>2</td></tr>
+                  <tr><td>Salesforce MCAE Web-to-Lead 연동 + 백업 저장 + reCAPTCHA v3</td><td>BE</td><td>2</td></tr>
+                  <tr><td rowspan="4">운영/QA</td><td>SEO/GEO 메타 + Schema.org + OG + sitemap + URL 커스텀 + llms.txt</td><td>FE/BE</td><td>2</td></tr>
+                  <tr><td>GA4 + GTM 연동 + 방문자 분석 대시보드</td><td>BE</td><td>1.5</td></tr>
+                  <tr><td>팝업/프로모션 관리 모듈 (노출 위치/기간/모바일/링크)</td><td>BE</td><td>1.5</td></tr>
+                  <tr><td>QA/배포(SSL/HTTPS) + 관리자 교육·매뉴얼</td><td>QA</td><td>3</td></tr>
+                </tbody>
+              </table>
+
+              <h2>산정 기준</h2>
+              <ul>
+                <li>1 M/D = 8시간 기준 (1인 1일 작업량)</li>
+                <li>주 5일 근무 기준</li>
+                <li>버퍼 15% 포함 (Salesforce 외부 API 연동 보안 리뷰 및 클라이언트 검수 대응)</li>
+                <li>유사 B2B 포탈 및 어드민 시스템 수행 경험 기반 효율적 개발</li>
+                <li>1 M/D 단위 = 0.5 ~ 4.0 사이 세분화하여 정밀 산정</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <!-- PAGE: PRD -->
+        <div id="page-prd" class="page-section space-y-6">
+          <div class="rounded-2xl border border-slate-200/70 bg-white/95 p-5 shadow-soft backdrop-blur md:p-8">
+            <article class="doc-content">
+              <h1>PRD (Product Requirements Document)</h1>
+              <blockquote>프로젝트 요구사항을 정의하고 기능 범위를 명확히 합니다.</blockquote>
+
+              <h2>1. 프로젝트 배경 및 목적</h2>
+              <p><strong>배경</strong> — 생명과학 연구 및 분석 장비를 중심으로 한 공식 홈페이지가 단순 기업 소개 형태에 머물러 있어, 고객의 연구 목적과 응용 분야 기반 탐색이 어렵고 잠재 고객 데이터 수집 채널이 부재합니다.</p>
+              <p><strong>목적</strong></p>
+              <ul>
+                <li>응용분야(Application) 중심 IA로 고객의 연구 여정에 맞춘 정보 구조 제공</li>
+                <li>글로벌 기술 기업 수준의 전문적이고 신뢰감 있는 브랜드 이미지 구축</li>
+                <li>잠재 고객(Lead) 확보 및 세일즈 전환율 향상</li>
+                <li>모바일 최적화 + CMS 고도화 + Salesforce MCAE 연동을 통한 데이터 기반 운영 체계 구축</li>
+              </ul>
+
+              <h2>2. 사용자 정의</h2>
+              <table>
+                <thead>
+                  <tr><th>사용자 유형</th><th>설명</th><th>주요 기능</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>잠재 고객 (연구자)</td><td>제품·응용분야 정보를 탐색하는 일반 방문자</td><td>응용분야 탐색, 제품 검색, 자료 다운로드, 데모/교육 신청, 문의</td></tr>
+                  <tr><td>기존 고객</td><td>웨비나·교육·자료실에 정기적으로 접근하는 사용자</td><td>웨비나 신청·다시보기, 자료 다운로드, 행사 신청</td></tr>
+                  <tr><td>마케팅 운영자</td><td>콘텐츠 등록·운영을 담당하는 내부 사용자</td><td>제품/응용분야/자료실 등록, 팝업 관리, SEO 메타 입력, 문의 데이터 확인, GA4 대시보드 조회</td></tr>
+                  <tr><td>최고관리자</td><td>시스템 전체 관리자</td><td>사용자 권한 관리, Salesforce 연동 점검, 로그 확인</td></tr>
+                </tbody>
+              </table>
+
+              <h2>3. 기능 요구사항</h2>
+
+              <h3>3.1 메인 페이지 (HOME)</h3>
+              <ul>
+                <li><strong>[필수]</strong> 동적 히어로 섹션 (배경 영상 또는 이미지 슬라이더)</li>
+                <li><strong>[필수]</strong> 응용분야 빠른 진입 카드 (4~6개)</li>
+                <li><strong>[필수]</strong> 신제품·이벤트·웨비나 슬라이더</li>
+                <li><strong>[필수]</strong> 자료실 최신 콘텐츠 카드</li>
+                <li><strong>[선택]</strong> 협력회사 로고 슬라이더</li>
+              </ul>
+
+              <h3>3.2 제품 (Products)</h3>
+              <ul>
+                <li><strong>[필수]</strong> 제품 카테고리 (기술 기반 분류: 크로마토그래피·세포배양·여과 등)</li>
+                <li><strong>[필수]</strong> 제품 상세 페이지 (스펙 테이블, 응용분야 자동 연결, 관련 자료, 데모 신청 CTA)</li>
+                <li><strong>[필수]</strong> 브랜드별 필터링</li>
+                <li><strong>[선택]</strong> 제품 비교 (3개까지 선택)</li>
+              </ul>
+
+              <h3>3.3 응용분야 (Applications)</h3>
+              <ul>
+                <li><strong>[필수]</strong> 응용분야 소개 (mAb / 바이러스 벡터 / mRNA 등)</li>
+                <li><strong>[필수]</strong> 스토리텔링형 UI: <em>Challenge → Solution → Reference → Product</em></li>
+                <li><strong>[필수]</strong> 관련 제품 자동 연결 (N:N)</li>
+                <li><strong>[필수]</strong> 관련 자료 자동 노출</li>
+              </ul>
+
+              <h3>3.4 자료실 (Resources)</h3>
+              <ul>
+                <li><strong>[필수]</strong> 4종 분류: Document / News / Webinar / Video</li>
+                <li><strong>[필수]</strong> 브랜드·응용분야 필터링</li>
+                <li><strong>[필수]</strong> PDF·이미지·Video 다운로드</li>
+                <li><strong>[필수]</strong> 웨비나 다시보기 (영상 임베드 또는 외부 호스팅 연결)</li>
+                <li><strong>[필수]</strong> 3종 뷰 모드 (gallery / magazine / list)</li>
+                <li><strong>[필수]</strong> 정렬 (최신순 / 조회순)</li>
+              </ul>
+
+              <h3>3.5 교육 (Education)</h3>
+              <ul>
+                <li><strong>[필수]</strong> 방문 세미나 프로그램 + 신청 폼 (Salesforce 연동)</li>
+                <li><strong>[필수]</strong> 웨비나 프로그램 + 신청 폼 (Salesforce 연동)</li>
+                <li><strong>[필수]</strong> 신청 완료 자동 회신 메일</li>
+              </ul>
+
+              <h3>3.6 데모 (Demo)</h3>
+              <ul>
+                <li><strong>[필수]</strong> 데모 안내 + 데모 장비 현황 + 데모 신청 폼 (Salesforce 연동)</li>
+                <li><strong>[필수]</strong> 장비별 가용 일정 표시</li>
+              </ul>
+
+              <h3>3.7 이벤트 (Events)</h3>
+              <ul>
+                <li><strong>[필수]</strong> 온라인/오프라인 이벤트, 학회·세미나, 할인 이벤트</li>
+                <li><strong>[필수]</strong> 진행 중/예정/종료 상태 자동 분류</li>
+              </ul>
+
+              <h3>3.8 회사정보 (Company)</h3>
+              <ul>
+                <li><strong>[필수]</strong> 회사소개, 핵심역량, 협력회사, 채용안내, 위치안내, 문의하기</li>
+                <li><strong>[필수]</strong> 문의하기 폼 → Salesforce MCAE 자동 전송</li>
+                <li><strong>[필수]</strong> 채용 공고 등록·관리 (CMS 기반)</li>
+              </ul>
+
+              <h3>3.9 통합 검색</h3>
+              <ul>
+                <li><strong>[필수]</strong> 제품명·게시글 제목·본문·첨부파일명 검색</li>
+                <li><strong>[필수]</strong> 브랜드·응용분야 다중 필터</li>
+                <li><strong>[선택]</strong> 검색엔진 기반 연관 검색 (예: ElasticPress)</li>
+                <li><strong>[필수]</strong> 인기 검색어 + 자동완성</li>
+              </ul>
+
+              <h3>3.10 마케팅 기능</h3>
+              <ul>
+                <li><strong>[필수]</strong> SEO/GEO 최적화 (Schema.org JSON-LD, OG, sitemap, llms.txt)</li>
+                <li><strong>[필수]</strong> URL 커스텀 (slug 직접 편집)</li>
+                <li><strong>[필수]</strong> 팝업/프로모션 노출 (노출 위치/기간/모바일 노출 여부/링크)</li>
+                <li><strong>[필수]</strong> Open Graph + Twitter Card 메타태그 자동 생성</li>
+              </ul>
+
+              <h3>3.11 관리자 기능</h3>
+              <ul>
+                <li><strong>[필수]</strong> CMS 기반 콘텐츠 등록·수정 (제품 / 응용분야 / 자료실 / 교육 / 데모 / 이벤트)</li>
+                <li><strong>[필수]</strong> 제품 ↔ 응용분야 N:N 자동 양방향 연결</li>
+                <li><strong>[필수]</strong> 팝업 관리 (노출 위치 / 노출 기간 / 모바일 노출 / 링크)</li>
+                <li><strong>[필수]</strong> 자료실(미디어 라이브러리) 관리</li>
+                <li><strong>[필수]</strong> 문의 데이터 관리 + Salesforce 자동 전송 + 백업 조회</li>
+                <li><strong>[필수]</strong> 통합 검색 데이터 관리 (검색어 통계 / 인기 검색어 등록)</li>
+                <li><strong>[필수]</strong> SEO 메타 정보 관리 (페이지별 title, description, OG)</li>
+                <li><strong>[필수]</strong> 방문자 통계 + 유입 경로 대시보드 (GA4 임베드)</li>
+              </ul>
+
+              <h2>4. 비기능 요구사항</h2>
+              <table>
+                <thead>
+                  <tr><th>항목</th><th>요구사항</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>성능</td><td>페이지 로딩 1.5초 이내, Lighthouse Performance 90+ (모바일 85+), Core Web Vitals 우수</td></tr>
+                  <tr><td>접근성</td><td>WCAG 2.1 AA 수준 준수 (시멘틱 마크업, alt 텍스트, 키보드 네비게이션)</td></tr>
+                  <tr><td>반응형</td><td>PC (≥1280px) / 태블릿 (768~1279px) / 모바일 (≤767px) 전면 대응</td></tr>
+                  <tr><td>보안</td><td>SSL/HTTPS, 워드프레스 보안 강화(Wordfence), reCAPTCHA v3, SQL Injection / XSS 방어, 관리자 2FA</td></tr>
+                  <tr><td>SEO/GEO</td><td>Schema.org JSON-LD, OG, sitemap.xml, robots.txt, llms.txt, 의미 단위 콘텐츠 청크</td></tr>
+                  <tr><td>브라우저 지원</td><td>Chrome, Edge, Safari, Firefox 최신 2개 메이저 버전</td></tr>
+                  <tr><td>운영</td><td>비개발자(마케팅팀)가 직접 콘텐츠 운영 가능 — Elementor Pro + Custom Gutenberg Block 조합</td></tr>
+                </tbody>
+              </table>
+
+              <h2>5. 기술 제약사항</h2>
+              <ul>
+                <li>워드프레스 6.x 기반 — 운영 효율성·CMS 성숙도·Salesforce 플러그인 생태계 고려한 우선 선택</li>
+                <li>Astra Pro 테마 활용 — 페이지 로드 속도 최우선 (대안: Blocksy, GeneratePress)</li>
+                <li>Elementor Pro + Custom Gutenberg Block 병행 — 일반 페이지는 Elementor, 핵심 페이지는 자체 블록</li>
+                <li>ACF Pro 관계 필드 — 제품 ↔ 응용분야 N:N 양방향 자동 연결</li>
+                <li>Salesforce MCAE Web-to-Lead 표준 엔드포인트 활용 (별도 API 키 또는 OAuth 인증 정보 클라이언트 제공 필요)</li>
+                <li>호스팅 환경 권장: Cloudways 또는 AWS Lightsail (PHP 8.x, MySQL 8, Redis Object Cache 사용 가능)</li>
+              </ul>
+
+              <h2>6. 범위 외 사항 (Out of Scope)</h2>
+              <ul>
+                <li>다국어(영문 등) — 본 견적에 미포함, 별도 협의</li>
+                <li>회원 가입·로그인 시스템 (B2B 폐쇄형 회원 영역) — 본 견적에 미포함</li>
+                <li>전자상거래(쇼핑몰) 기능 — 본 견적에 미포함</li>
+                <li>콘텐츠 제작(텍스트, 제품 사진 촬영, 영상 편집) — 클라이언트 제공</li>
+                <li>Salesforce MCAE 내부 워크플로우 설정 (Cloud 측 작업)</li>
+                <li>웹 호스팅·도메인·유료 라이선스 비용</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <!-- PAGE: 일정 제안 -->
+        <div id="page-timeline" class="page-section space-y-6">
+          <div class="rounded-2xl border border-slate-200/70 bg-white/95 p-5 shadow-soft backdrop-blur md:p-8">
+            <article class="doc-content">
+              <h1>일정 제안</h1>
+              <blockquote>총 90일 기준 단계별 마일스톤 및 산출물을 제안합니다. 계약 체결 후 즉시 시작 가능합니다.</blockquote>
+
+              <h2>전체 일정 요약</h2>
+              <table>
+                <thead>
+                  <tr><th>단계</th><th>기간</th><th>주요 산출물</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Phase 1: 기획 & IA 고도화</td><td>Day 1–18</td><td>요구사항 정의서, IA 다이어그램, 와이어프레임, DB 스키마, ACF 필드 명세</td></tr>
+                  <tr><td>Phase 2: UI/UX 디자인</td><td>Day 12–35</td><td>Figma 디자인 시안 (메인 + 9개 대분류, 반응형 3종), 디자인 시스템</td></tr>
+                  <tr><td>Phase 3: 워드프레스 개발 + CPT</td><td>Day 25–60</td><td>테마 커스터마이징, Custom Gutenberg Block, CPT, ACF 관계 필드, 통합 검색</td></tr>
+                  <tr><td>Phase 4: 외부 연동 + 마케팅 기능</td><td>Day 50–75</td><td>Salesforce MCAE 연동, GA4/GTM, SEO/GEO 메타, 팝업 관리</td></tr>
+                  <tr><td>Phase 5: QA + 배포 + 교육</td><td>Day 70–90</td><td>QA 보고서, SSL 적용, 운영 매뉴얼, 화상 교육 2회, 영상 녹화본</td></tr>
+                </tbody>
+              </table>
+            </article>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200/70 bg-white/95 p-5 shadow-soft backdrop-blur md:p-8">
+            <h2 class="mb-4 text-sm font-semibold tracking-[0.14em] text-slate-500">상세 타임라인</h2>
+            <div class="timeline">
+
+              <div class="timeline-item">
+                <p class="text-sm font-semibold tracking-[0.14em] text-sky-700">PHASE 1</p>
+                <h4 class="text-base font-semibold text-slate-900">기획 & IA 고도화</h4>
+                <p class="mb-1 text-sm font-semibold text-amber-600">Day 1–18 (3주)</p>
+                <p class="text-sm leading-7 text-slate-600">참고 사이트(Cytiva, LG Battery Inside, 자연과학 자료실) 심층 분석 + 클라이언트 메뉴 구성도 기반 IA 고도화 + 사용자 여정 매핑 + 와이어프레임 제작 + DB·ACF 필드 명세.</p>
+                <ul class="mt-2 list-disc pl-5 text-sm text-slate-500">
+                  <li>킥오프 미팅 (Day 1)</li>
+                  <li>참고 사이트 분석 보고서 (Day 4)</li>
+                  <li>IA 다이어그램 + 와이어프레임 (Day 12)</li>
+                  <li>DB 스키마 + ACF 관계 필드 명세 (Day 18)</li>
+                </ul>
+              </div>
+
+              <div class="timeline-item">
+                <p class="text-sm font-semibold tracking-[0.14em] text-sky-700">PHASE 2</p>
+                <h4 class="text-base font-semibold text-slate-900">UI/UX 디자인 (Figma)</h4>
+                <p class="mb-1 text-sm font-semibold text-amber-600">Day 12–35 (3.5주, Phase 1 후반과 일부 병행)</p>
+                <p class="text-sm leading-7 text-slate-600">디자인 시스템 정의 → 메인 페이지 → 9개 대분류 페이지 → 반응형(태블릿/모바일) 시안 순차 진행. 응용분야 스토리텔링 UI는 별도 디자인 검토.</p>
+                <ul class="mt-2 list-disc pl-5 text-sm text-slate-500">
+                  <li>디자인 시스템 (컬러, 타이포, 컴포넌트) (Day 18)</li>
+                  <li>메인 + 회사정보 시안 1차 (Day 22)</li>
+                  <li>제품·응용분야·자료실 시안 (Day 28)</li>
+                  <li>반응형 3종 + 디자인 최종 확정 (Day 35)</li>
+                </ul>
+              </div>
+
+              <div class="timeline-item">
+                <p class="text-sm font-semibold tracking-[0.14em] text-sky-700">PHASE 3</p>
+                <h4 class="text-base font-semibold text-slate-900">워드프레스 개발 + 커스텀 포스트 타입</h4>
+                <p class="mb-1 text-sm font-semibold text-amber-600">Day 25–60 (5주)</p>
+                <p class="text-sm leading-7 text-slate-600">Astra Pro 자식 테마 구성 → CPT(제품/응용분야/자료실 등) 등록 → ACF 관계 필드(N:N) → 응용분야 스토리텔링 Custom Gutenberg Block → 통합 검색 + 필터.</p>
+                <ul class="mt-2 list-disc pl-5 text-sm text-slate-500">
+                  <li>로컬 개발 환경 + 테마 베이스 구축 (Day 30)</li>
+                  <li>CPT + ACF Pro 관계 필드 + 분류체계 (Day 40)</li>
+                  <li>Custom Gutenberg Block (히어로, 응용분야 스토리텔링) (Day 50)</li>
+                  <li>통합 검색 + 필터 + 3뷰 모드 (Day 60)</li>
+                </ul>
+              </div>
+
+              <div class="timeline-item">
+                <p class="text-sm font-semibold tracking-[0.14em] text-sky-700">PHASE 4</p>
+                <h4 class="text-base font-semibold text-slate-900">외부 연동 + 마케팅 기능</h4>
+                <p class="mb-1 text-sm font-semibold text-amber-600">Day 50–75 (3.5주)</p>
+                <p class="text-sm leading-7 text-slate-600">Salesforce MCAE Web-to-Lead 연동 → reCAPTCHA v3 → 데이터 백업 저장 → GA4/GTM 연동 → SEO/GEO 메타 + Schema.org → 팝업 관리.</p>
+                <ul class="mt-2 list-disc pl-5 text-sm text-slate-500">
+                  <li>Salesforce 연동 + 백업 저장 + 회신 메일 (Day 60)</li>
+                  <li>GA4 + GTM + 방문자 분석 대시보드 (Day 67)</li>
+                  <li>SEO/GEO 메타 + Schema.org + sitemap + llms.txt (Day 72)</li>
+                  <li>팝업 관리 모듈 + Open Graph 자동화 (Day 75)</li>
+                </ul>
+              </div>
+
+              <div class="timeline-item">
+                <p class="text-sm font-semibold tracking-[0.14em] text-sky-700">PHASE 5</p>
+                <h4 class="text-base font-semibold text-slate-900">QA + 배포 + 관리자 교육</h4>
+                <p class="mb-1 text-sm font-semibold text-amber-600">Day 70–90 (3주)</p>
+                <p class="text-sm leading-7 text-slate-600">크로스 브라우저·반응형·성능 QA → 보안 점검 → 운영 매뉴얼 작성 → 운영 환경 배포 → 화상 교육 2회 → 1개월 무상 하자 보수 시작.</p>
+                <ul class="mt-2 list-disc pl-5 text-sm text-slate-500">
+                  <li>QA 보고서 + 보안 점검 (Day 78)</li>
+                  <li>운영 매뉴얼(Notion + 단계별 스크린샷) (Day 82)</li>
+                  <li>운영 환경 배포 + SSL 적용 (Day 85)</li>
+                  <li>관리자 화상 교육 2회 + 영상 녹화본 (Day 88)</li>
+                  <li>최종 검수 + 인수인계 (Day 90)</li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200/70 bg-white/95 p-5 shadow-soft backdrop-blur md:p-8">
+            <article class="doc-content">
+              <h2>마일스톤 체크포인트</h2>
+              <table>
+                <thead>
+                  <tr><th>마일스톤</th><th>시점</th><th>검수 기준</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>M1: IA & 와이어프레임 확정</td><td>Day 18</td><td>요구사항 정의서, IA, 와이어프레임 승인</td></tr>
+                  <tr><td>M2: 디자인 시안 확정</td><td>Day 35</td><td>Figma 시안 (PC/태블릿/모바일) 승인</td></tr>
+                  <tr><td>M3: 워드프레스 개발 완료</td><td>Day 60</td><td>CPT, ACF, Custom Block, 통합 검색 동작 확인</td></tr>
+                  <tr><td>M4: 외부 연동 완료</td><td>Day 75</td><td>Salesforce 연동 데이터 송수신, GA4 수집, SEO 메타 검수</td></tr>
+                  <tr><td>M5: 운영 환경 오픈</td><td>Day 90</td><td>전체 QA 통과, 매뉴얼/교육 완료, SSL 적용, 인수인계 완료</td></tr>
+                </tbody>
+              </table>
+
+              <h2>커뮤니케이션 계획</h2>
+              <table>
+                <tr><th>항목</th><th>방식</th><th>주기</th></tr>
+                <tr><td>일일 진행 공유</td><td>Slack 또는 카카오톡</td><td>매일</td></tr>
+                <tr><td>주간 미팅</td><td>Zoom / Google Meet</td><td>주 1회</td></tr>
+                <tr><td>마일스톤 리뷰</td><td>화면 공유 + 문서 + Figma 코멘트</td><td>각 단계 완료 시</td></tr>
+                <tr><td>이슈 트래킹</td><td>GitHub Issues 또는 Linear</td><td>상시</td></tr>
+                <tr><td>스테이징 검수</td><td>스테이징 URL 공유</td><td>Phase 3·4·5 종료 시</td></tr>
+              </table>
+            </article>
+          </div>
+        </div>
+
+        <!-- PAGE: 포트폴리오 -->
+        <div id="page-portfolio" class="page-section space-y-6">
+          <div class="rounded-2xl border border-slate-200/70 bg-white/95 p-5 shadow-soft backdrop-blur md:p-8">
+            <article class="doc-content">
+              <h1>유사 프로젝트 경험</h1>
+              <blockquote>본 프로젝트의 핵심 요구사항(B2B 정보 구조 + 어드민 CMS + 외부 시스템 연동 + 콘텐츠 N:N 관계)에 직결되는 수행 경험 3건을 소개합니다.</blockquote>
+            </article>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 text-center shadow-soft backdrop-blur">
+              <p class="text-2xl font-bold text-sky-700">3건</p>
+              <p class="mt-1 text-sm text-slate-500">직접 매칭 사례</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 text-center shadow-soft backdrop-blur">
+              <p class="text-2xl font-bold text-sky-700">100%</p>
+              <p class="mt-1 text-sm text-slate-500">풀스택 참여율</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 text-center shadow-soft backdrop-blur">
+              <p class="text-2xl font-bold text-sky-700">200+</p>
+              <p class="mt-1 text-sm text-slate-500">API 엔드포인트</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-4 text-center shadow-soft backdrop-blur">
+              <p class="text-2xl font-bold text-sky-700">B2B</p>
+              <p class="mt-1 text-sm text-slate-500">엔터프라이즈 도메인</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-soft backdrop-blur md:p-8">
+              <div class="mb-3 inline-flex rounded-full border px-2.5 py-1 text-sm font-semibold tracking-[0.12em] bg-sky-100 text-sky-700 border-sky-200">B2B SaaS · 기업용 포탈</div>
+              <h3 class="text-lg font-semibold tracking-tight text-slate-900">전자결재 SaaS (EZ-Approve)</h3>
+              <p class="mt-1 text-sm text-slate-400">B2B SaaS · 기업용 소프트웨어 · 9주</p>
+              <div class="mt-3 doc-content">
+                <h4>프로젝트 개요</h4>
+                <p>다단계 전자결재·전자도장·실시간 공동편집을 지원하는 기업용 어드민 포탈. 7 사용자 역할(RBAC) + 6계층 보안 + 50+ 페이지 + 120-150 API 엔드포인트 + 34 엔티티 규모.</p>
+                <h4>핵심 기능</h4>
+                <ul>
+                  <li>다단계 전자결재 엔진 (8종 결재 액션)</li>
+                  <li>토큰 기반 외부 셀프서비스 포탈 (B2B 외부 사용자)</li>
+                  <li>RBAC 어드민 패널 (7 역할 × 50+ 페이지)</li>
+                  <li>Lexical 리치 에디터 (170 파일, 26 커스텀 노드)</li>
+                  <li>실시간 공동편집 (CRDT/Yjs)</li>
+                </ul>
+                <h4>본 프로젝트와의 유사점</h4>
+                <ul>
+                  <li><strong>관리자 CMS 고도화</strong> — 콘텐츠 등록·수정·권한 관리 구조 직결</li>
+                  <li><strong>N:N 관계 데이터 모델링</strong> — 결재선 ↔ 사용자 ↔ 부서 다중 관계 설계 경험을 제품 ↔ 응용분야 N:N 자동 연결에 적용</li>
+                  <li><strong>비개발자 운영 자율성</strong> — 마케팅·인사팀이 직접 운영 가능한 어드민 UX 설계 노하우</li>
+                  <li><strong>대규모 페이지 IA</strong> — 50+ 페이지 정보 구조 설계 경험</li>
+                </ul>
+                <h4>기술 스택</h4>
+                <div class="flex flex-wrap gap-1.5 not-prose">
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">NestJS 10</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">Next.js 13</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">TypeScript</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">MySQL 8</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">Lexical + Yjs</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">CASL RBAC</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">Docker</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-soft backdrop-blur md:p-8">
+              <div class="mb-3 inline-flex rounded-full border px-2.5 py-1 text-sm font-semibold tracking-[0.12em] bg-sky-100 text-sky-700 border-sky-200">핀테크 · B2B 포탈 · 외부 API 다중 연동</div>
+              <h3 class="text-lg font-semibold tracking-tight text-slate-900">VC 펀드 관리 플랫폼 (Series-B)</h3>
+              <p class="mt-1 text-sm text-slate-400">핀테크 · B2B 포탈 · 14개월</p>
+              <div class="mt-3 doc-content">
+                <h4>프로젝트 개요</h4>
+                <p>VC 펀드 라이프사이클 관리 + AI 투자 보고서 + 규제 양식 5종 + 외부 KYC/감사·CRM API 다중 연동. PR 1,652건, 50+ 페이지, 22 도메인 모듈, 80+ 엔티티, 200~300+ API 엔드포인트.</p>
+                <h4>핵심 기능</h4>
+                <ul>
+                  <li>GP / LP / 스타트업 3개 사용자 그룹 포탈 통합 운영</li>
+                  <li>AI 투자 보고서 자동 생성 (ChatGPT API 연동)</li>
+                  <li>NICE KYC + VICS 규제 양식 + 외부 감사 시스템 연동</li>
+                  <li>Lexical + Yjs 실시간 공동 편집 (1,652 PR 기준 안정 운영)</li>
+                  <li>5계층 보안 + DLP + GeoIP 차단</li>
+                </ul>
+                <h4>본 프로젝트와의 유사점</h4>
+                <ul>
+                  <li><strong>외부 시스템 다중 연동</strong> — KYC, 감사, CRM 등 다수 외부 API 안정 연동 경험을 Salesforce MCAE 연동에 직결 적용</li>
+                  <li><strong>대시보드/분석</strong> — 방문자 통계·유입 경로 대시보드 구조 설계와 동일한 패턴</li>
+                  <li><strong>SEO/메타 정보 관리</strong> — 50+ 페이지 메타 정보 일괄 관리 경험</li>
+                  <li><strong>보안 + 폼 데이터 무결성</strong> — 외부 폼 제출 실패 시 백업 저장·재시도 패턴 경험</li>
+                </ul>
+                <h4>기술 스택</h4>
+                <div class="flex flex-wrap gap-1.5 not-prose">
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">Next.js 13</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">NestJS 10</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">TypeScript</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">MySQL</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">Lexical / Yjs</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">AWS</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">OpenAI API</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-soft backdrop-blur md:p-8">
+              <div class="mb-3 inline-flex rounded-full border px-2.5 py-1 text-sm font-semibold tracking-[0.12em] bg-sky-100 text-sky-700 border-sky-200">B2B SaaS · 헬스케어 · 다층 콘텐츠 관리</div>
+              <h3 class="text-lg font-semibold tracking-tight text-slate-900">시니어 주간보호 관리 플랫폼 (Harmony Link)</h3>
+              <p class="mt-1 text-sm text-slate-400">B2B SaaS · 헬스케어(생명과학 인접 도메인) · 6개월</p>
+              <div class="mt-3 doc-content">
+                <h4>프로젝트 개요</h4>
+                <p>시니어 주간보호 시설용 케어 로그 + 투약 + 보호자 커뮤니케이션 + AI 건강 분석 통합 플랫폼. 133K+ LOC, 140+ API, 6 플랫폼 동시 지원, 멀티테넌트 아키텍처.</p>
+                <h4>핵심 기능</h4>
+                <ul>
+                  <li>케어 로그 / 투약 / 보호자 알림 / AI 건강 분석 (OpenAI)</li>
+                  <li>전자서명 워크플로우</li>
+                  <li>멀티테넌트 (시설별 데이터 격리)</li>
+                  <li>크로스플랫폼 (Flutter + 웹 어드민)</li>
+                </ul>
+                <h4>본 프로젝트와의 유사점</h4>
+                <ul>
+                  <li><strong>헬스케어/생명과학 인접 도메인</strong> — 전문 산업 용어와 워크플로우 이해 능력 검증</li>
+                  <li><strong>다양한 콘텐츠 유형 관리</strong> — 케어 로그, 알림, 분석 결과 등 이종 콘텐츠를 통합 관리한 경험을 자료실 4종(Document/News/Webinar/Video) 분류에 적용</li>
+                  <li><strong>멀티 디바이스 대응</strong> — 6 플랫폼 동시 지원 경험을 PC/태블릿/모바일 반응형에 적용</li>
+                  <li><strong>전문가 사용자 UX</strong> — 비IT 운영자(요양보호사/마케터)가 직접 사용 가능한 UI 설계 경험</li>
+                </ul>
+                <h4>기술 스택</h4>
+                <div class="flex flex-wrap gap-1.5 not-prose">
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">NestJS</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">Next.js</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">Flutter</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">TypeScript</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">MySQL</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">AWS CDK</span>
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-sm text-slate-500">OpenAI API</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="rounded-2xl border border-sky-200/70 bg-gradient-to-br from-sky-50 to-brand-50 p-6 text-center shadow-soft md:p-10">
+            <h2 class="text-xl font-bold tracking-tight text-slate-900 md:text-2xl">함께 만들어 가겠습니다</h2>
+            <p class="mx-auto mt-3 max-w-lg text-sm leading-7 text-slate-600">프로젝트에 대해 더 자세한 논의를 원하시면 미팅을 신청해 주세요.</p>
+          </div>
+        </div>
+
+        <!-- Bottom Page Navigation -->
+        <div id="page-nav" class="mt-6 flex items-center justify-between gap-4" style="display:none;">
+          <a id="nav-prev" href="#home"
+             class="group flex items-center gap-2 rounded-2xl border border-slate-200/70 bg-white/90 px-5 py-3 shadow-soft backdrop-blur transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white">
+            <svg class="w-5 h-5 text-slate-400 transition group-hover:text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            <span>
+              <span class="block text-xs text-slate-400">이전</span>
+              <span id="nav-prev-label" class="block text-sm font-semibold text-slate-700 group-hover:text-sky-700">홈</span>
+            </span>
+          </a>
+          <a id="nav-next" href="#overview"
+             class="group flex items-center gap-2 rounded-2xl border border-slate-200/70 bg-white/90 px-5 py-3 shadow-soft backdrop-blur transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-white text-right ml-auto">
+            <span>
+              <span class="block text-xs text-slate-400">다음</span>
+              <span id="nav-next-label" class="block text-sm font-semibold text-slate-700 group-hover:text-sky-700">프로젝트 소개</span>
+            </span>
+            <svg class="w-5 h-5 text-slate-400 transition group-hover:text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+      </main>
+    </div>
+
+    <footer class="mt-10 border-t border-slate-200 pt-6 text-xs text-slate-500">
+      &copy; 2026 &middot; 본 제안서는 B2B 생명과학 홈페이지 리뉴얼 및 워드프레스 구축 프로젝트를 위해 작성되었습니다.
+    </footer>
+  </div>
+
+  <!-- SPA Router -->
+  <script>
+    const pages = ['home', 'overview', 'estimate', 'manday', 'prd', 'timeline', 'portfolio'];
+    const pageLabels = {
+      home: '홈', overview: '프로젝트 소개', estimate: '견적서',
+      manday: '공수계산서', prd: 'PRD', timeline: '일정 제안', portfolio: '유사 프로젝트 경험'
+    };
+
+    function navigate(pageId) {
+      if (!pages.includes(pageId)) pageId = 'home';
+      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById('page-' + pageId);
+      if (target) target.classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(link => {
+        if (link.dataset.page === pageId) {
+          link.className = 'nav-link block rounded-xl border px-3 py-2 text-sm border-sky-200 bg-sky-50 font-medium text-sky-700';
+        } else {
+          link.className = 'nav-link block rounded-xl border border-transparent px-3 py-2 text-sm text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900';
+        }
+      });
+      updatePageNav(pageId);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      closeSidebar();
+    }
+
+    function updatePageNav(pageId) {
+      const nav = document.getElementById('page-nav');
+      const idx = pages.indexOf(pageId);
+      const prevBtn = document.getElementById('nav-prev');
+      const nextBtn = document.getElementById('nav-next');
+      const prevLabel = document.getElementById('nav-prev-label');
+      const nextLabel = document.getElementById('nav-next-label');
+
+      nav.style.display = (pageId === 'home') ? 'none' : 'flex';
+
+      if (idx > 0) {
+        prevBtn.href = '#' + pages[idx - 1];
+        prevLabel.textContent = pageLabels[pages[idx - 1]];
+        prevBtn.style.visibility = 'visible';
+      } else {
+        prevBtn.style.visibility = 'hidden';
+      }
+
+      if (idx < pages.length - 1) {
+        nextBtn.href = '#' + pages[idx + 1];
+        nextLabel.textContent = pageLabels[pages[idx + 1]];
+        nextBtn.style.visibility = 'visible';
+      } else {
+        nextBtn.style.visibility = 'hidden';
+      }
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-backdrop').classList.remove('open');
+    }
+
+    function handleHash() {
+      const hash = (location.hash || '#home').replace('#', '');
+      navigate(hash);
+    }
+    window.addEventListener('hashchange', handleHash);
+    window.addEventListener('DOMContentLoaded', handleHash);
+
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebar-backdrop').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
